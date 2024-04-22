@@ -1,10 +1,12 @@
 
 let allPokemon;
 let pokemon = [];
+let pokemonName = [];
 
 async function init() {
     await loadPokemon();
     renderPokemonCard();
+    searchPokemon();
 }
 
 async function loadPokemon() {
@@ -21,6 +23,7 @@ async function renderPokemonCard() {
     container.innerHTML = '';
     for (let i = 0; i < pokemon.length; i++) {
         let name = pokemon[i]['name'];
+        pokemonName.push(name);
         let nameToUpperCase = setFirstLetterUppercase(name)
         let image = pokemon[i]['sprites']['other']['official-artwork']['front_shiny'];
         let pokemonId = pokemon[i]['id'];
@@ -28,6 +31,7 @@ async function renderPokemonCard() {
         let { typeColorBgLeft, typeColorBgRight } = getBgColor(i);
         container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, i, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
         renderTypeContainer(i);
+        
     }
 }
 
@@ -99,7 +103,7 @@ function renderPokedexCard(i) {
 
 }
 
-function getData(i) {
+async function getData(i) {
 
     let pokedexContainer = document.getElementById('pokedex-bg');
     let name = pokemon[i]['name'];
@@ -108,7 +112,7 @@ function getData(i) {
     let id = pokemon[i]['id'];
     let idFormatted = addZerosOnId(id);
     let { typeColorBgLeft, typeColorBgRight } = getBgColor(i);
-    console.log(i);
+    console.log(pokemon);
     pokedexContainer.innerHTML = '';
     pokedexContainer.innerHTML += renderPokedexCardHtml(nameToUpperCase, image, idFormatted, typeColorBgLeft, typeColorBgRight, i);
 
@@ -154,11 +158,11 @@ function addZerosOnId(id){
 function loadBaseStats(i) {
     setMenuActiv('menuBaseStats');
     setMenuInactiv('menuAbout')
-    let baseStatsContainer = document.getElementById('baseStatsSection');
-    baseStatsContainer.innerHTML ='';
-    baseStatsContainer.innerHTML += renderBaseStatsSectionHtml(i);
-    document.getElementById('aboutSection').classList.add('d-none');
-    document.getElementById('baseStatsSection').classList.remove('d-none');
+    let aboutContainer = document.getElementById('aboutSection');
+    aboutContainer.innerHTML ='';
+    aboutContainer.innerHTML = renderBaseStatsSectionHtml(i);
+    renderChart(i);
+
 }
 
 function loadAbout(i) {
@@ -167,18 +171,15 @@ function loadAbout(i) {
     setMenuInactiv('menuBaseStats');
     let aboutContainer = document.getElementById('aboutSection');
     aboutContainer.innerHTML ='';
-    aboutContainer.innerHTML += renderAboutSectionHtml(i);
-    document.getElementById('aboutSection').classList.remove('d-none');
-    document.getElementById('baseStatsSection').classList.add('d-none');
-    console.log('pokemon', pokemon);
+    aboutContainer.innerHTML = renderAboutSectionHtml(i);
 
 }
 
-
-
-function renderBaseStatsSectionHtml(i) {
+function renderBaseStatsSectionHtml() {
     return /*html*/`
-    <div>test Base Stats${i}</div>
+    <div class="chartContainer">  
+        <canvas id="myChart">test</canvas>
+    </div>
     `;
 }
 
@@ -210,9 +211,6 @@ function setMenuInactiv(menuId) {
     document.getElementById(menuId).classList.remove('pokedexMenu-p-activ')
 }
 
-
-
-
 function loadPokedexCard() {
     document.getElementById('pokedex-bg').classList.remove('d-none');
 }
@@ -225,8 +223,11 @@ function stopPropagation(event) {
     event.stopPropagation();
 }
 
-
-
-
-
-
+function searchPokemon() {
+    let inputField = document.querySelector('#inputSearch');
+    inputField.addEventListener('input', function(){
+        let search = inputField.value.toLowerCase();
+        let assigned = pokemonName.filter(poke => poke.toLowerCase().includes(search));
+        console.log(assigned);
+    });
+}
