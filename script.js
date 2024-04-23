@@ -2,6 +2,7 @@
 let allPokemon;
 let pokemon = [];
 let pokemonName = [];
+let pokemonSearch = [];
 
 async function init() {
     await loadPokemon();
@@ -15,8 +16,11 @@ async function loadPokemon() {
         let response = await fetch(url);
         allPokemon = await response.json();
         pokemon.push(allPokemon);
+
     }
 }
+
+
 
 async function renderPokemonCard() {
     let container = document.getElementById('previewCard');
@@ -112,7 +116,7 @@ async function getData(i) {
     let id = pokemon[i]['id'];
     let idFormatted = addZerosOnId(id);
     let { typeColorBgLeft, typeColorBgRight } = getBgColor(i);
-    console.log(pokemon);
+
     pokedexContainer.innerHTML = '';
     pokedexContainer.innerHTML += renderPokedexCardHtml(nameToUpperCase, image, idFormatted, typeColorBgLeft, typeColorBgRight, i);
 
@@ -224,10 +228,33 @@ function stopPropagation(event) {
 }
 
 function searchPokemon() {
-    let inputField = document.querySelector('#inputSearch');
-    inputField.addEventListener('input', function(){
-        let search = inputField.value.toLowerCase();
-        let assigned = pokemonName.filter(poke => poke.toLowerCase().includes(search));
-        console.log(assigned);
+  let inputField = document.querySelector("#inputSearch");
+  let container = document.getElementById("previewCard");
+
+  // let indexPokemon = pokemonName[]
+
+  inputField.addEventListener("input", function () {
+    let search = inputField.value.toLowerCase();
+
+
+    let assignedIndices = pokemonName.reduce((indices, poke, index) => {
+      if (poke.toLowerCase().includes(search)) {
+        indices.push(index);
+      }
+      return indices;
+    }, []);
+    container.innerHTML='';
+    assignedIndices.forEach(index => {
+        console.log('index :>> ', index);
+        let name = pokemon[index]['name'];
+        let nameToUpperCase = setFirstLetterUppercase(name);
+        let image = pokemon[index]['sprites']['other']['official-artwork']['front_shiny'];
+        let pokemonId = pokemon[index]['id'];
+        let pokemonIdZeros = addZerosOnId(pokemonId);
+        let { typeColorBgLeft, typeColorBgRight } = getBgColor(index);
+        container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, index, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
+        renderTypeContainer(index);
+
     });
+  });
 }
