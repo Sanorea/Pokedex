@@ -36,12 +36,31 @@ h2{
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
+.arrow{
+    width: 48px;
+    height: 48px;
+    filter: invert();
+    padding-inline: 32px;
+    cursor: pointer;
+}
+
+.arrow:hover{
+    transform: scale(1.03);
 }
 
 .pokedex-form{
     height: 80%;
     width: 500px;
+
+}
+
+.pokedex-form-bg{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
 }
 
 #pokedex{

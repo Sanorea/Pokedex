@@ -25,7 +25,7 @@ async function loadPokemon() {
 async function renderPokemonCard() {
     let container = document.getElementById('previewCard');
     container.innerHTML = '';
-    pokemonName =[];
+    pokemonName = [];
     for (let i = 0; i < pokemon.length; i++) {
         let name = pokemon[i]['name'];
         pokemonName.push(name);
@@ -124,28 +124,30 @@ async function getData(i) {
 
 function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRight, i) {
     return /*html*/`
-    <div onclick="stopPropagation(event)" class="pokedex-form">
-        <div class="bg-pokedex-upper-image">
-            <div id="pokedex" style="background: linear-gradient(to right, ${typeColorBgLeft} 35%, ${typeColorBgRight} 65%)">
-                <h2 id="pokemonName">${name}</h2>
-                <p>#${id}</p>
+    
+    <div class="pokedex-form-bg"  onclick="stopPropagation(event)">
+        <img class="arrow" src="./img/linker-pfeil.png" alt="" onclick="previewPokemon(${i-1})">
+        <div class="pokedex-form">
+            <div class="bg-pokedex-upper-image">
+                <div id="pokedex" style="background: linear-gradient(to right, ${typeColorBgLeft} 35%, ${typeColorBgRight} 65%)">
+                    <h2 id="pokemonName">${name}</h2>
+                    <p>#${id}</p>
+                </div>
             </div>
-
-        </div>
-        <div class="info-container">
-            <div class="image-Container-pokedex-card">
-            <img class="imagePokedexCard" src="${image}">                
+            <div class="info-container">
+                <div class="image-Container-pokedex-card">
+                <img class="imagePokedexCard" src="${image}">                
+                </div>
+                <div class="pokedexMenu">
+                    <p id="menuAbout" class="pokedexMenu-p-activ" onclick="loadAbout(${i})">About</p>
+                    <p id="menuBaseStats" onclick="loadBaseStats(${i})">Base Stats</p>
+                </div>            
+                <div class="infoSection" id="aboutSection"></div>
+                <div class="infoSection" id="baseStatsSection"></div>
             </div>
-
-            <div class="pokedexMenu">
-                <p id="menuAbout" class="pokedexMenu-p-activ" onclick="loadAbout(${i})">About</p>
-                <p id="menuBaseStats" onclick="loadBaseStats(${i})">Base Stats</p>
-            </div>            
-            <div class="infoSection" id="aboutSection"></div>
-            <div class="infoSection" id="baseStatsSection"></div>
         </div>
-
-    </div>
+        <img class="arrow" src="./img/rechter-pfeil.png" alt="" onclick="nextPokemon(${i+1})">
+    </div>        
     `;
 }
 
@@ -216,7 +218,7 @@ function setMenuActiv(menuId) {
 
 
 function setMenuInactiv(menuId, bool, classList) {
-    document.getElementById(menuId).classList.remove('pokedexMenu-p-activ')
+    document.getElementById(menuId).classList.remove('pokedexMenu-p-activ');
 }
 
 function loadPokedexCard() {
@@ -235,13 +237,8 @@ function searchPokemon() {
     console.log('pokemonNameSearch :>> ', pokemonName);
     let inputField = document.querySelector("#inputSearch");
     let container = document.getElementById("previewCard");
-
-    // let indexPokemon = pokemonName[]
-
     inputField.addEventListener("input", function () {
         let search = inputField.value.toLowerCase();
-
-
         let assignedIndices = pokemonName.reduce((indices, poke, index) => {
             if (poke.toLowerCase().includes(search)) {
                 indices.push(index);
@@ -249,17 +246,29 @@ function searchPokemon() {
             return indices;
         }, []);
         container.innerHTML = '';
-            assignedIndices.forEach(index => {
-                console.log('index :>> ', index);
-                console.log('pokemon :>> ', pokemon);
-                let name = pokemon[index]['name'];
-                let nameToUpperCase = setFirstLetterUppercase(name);
-                let image = pokemon[index]['sprites']['other']['official-artwork']['front_shiny'];
-                let pokemonId = pokemon[index]['id'];
-                let pokemonIdZeros = addZerosOnId(pokemonId);
-                let { typeColorBgLeft, typeColorBgRight } = getBgColor(index);
-                container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, index, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
-                renderTypeContainer(index); 
-             }); 
+        renderSearchPokemon(assignedIndices, container)
     });
+}
+
+function renderSearchPokemon(assignedIndices, container) {
+    assignedIndices.forEach(index => {
+        let name = pokemon[index]['name'];
+        let nameToUpperCase = setFirstLetterUppercase(name);
+        let image = pokemon[index]['sprites']['other']['official-artwork']['front_shiny'];
+        let pokemonId = pokemon[index]['id'];
+        let pokemonIdZeros = addZerosOnId(pokemonId);
+        let { typeColorBgLeft, typeColorBgRight } = getBgColor(index);
+        container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, index, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
+        renderTypeContainer(index);
+    });
+}
+
+function previewPokemon(i){
+    getData(i);
+    loadAbout(i);
+}
+
+function nextPokemon(i){
+    getData(i);
+    loadAbout(i);
 }
