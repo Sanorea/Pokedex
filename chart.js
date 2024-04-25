@@ -21,8 +21,6 @@ new Chart(ctx, {
     data: {
         labels: labels,
         datasets: [{
-
-
             label: 'Fähigkeiten',
             data: datas,
             backgroundColor: [
@@ -54,12 +52,10 @@ new Chart(ctx, {
             },
           },
         scales: {
-            x: {
+            y: {
                 beginAtZero: true,
-                max: 200,
-                grid: {
-                  display: false,
-                  drawBorder: false,
+                ticks: {
+                  autoSkip: false
                 },
               },
         }

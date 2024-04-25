@@ -25,6 +25,7 @@ async function loadPokemon() {
 async function renderPokemonCard() {
     let container = document.getElementById('previewCard');
     container.innerHTML = '';
+    pokemonName =[];
     for (let i = 0; i < pokemon.length; i++) {
         let name = pokemon[i]['name'];
         pokemonName.push(name);
@@ -35,7 +36,7 @@ async function renderPokemonCard() {
         let { typeColorBgLeft, typeColorBgRight } = getBgColor(i);
         container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, i, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
         renderTypeContainer(i);
-        
+
     }
 }
 
@@ -85,14 +86,13 @@ function renderPokemonInfo() {
 }
 
 async function loadNextPokemon() {
-    let currentCount = pokemon.length+1;
-    let endcount = pokemon.length + 20;
-    for (let a = currentCount; a < endcount + 20; a++) {
+    let currentCount = pokemon.length + 1;
+    let endcount = currentCount + 21;
+    for (let a = currentCount; a < endcount; a++) {
         let url = `https://pokeapi.co/api/v2/pokemon/${a}`;
         let response = await fetch(url);
         nextPokemon = await response.json();
         pokemon.push(nextPokemon);
-
     }
     renderPokemonCard();
 }
@@ -149,21 +149,21 @@ function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRigh
     `;
 }
 
-function addZerosOnId(id){
+function addZerosOnId(id) {
     let widthId = 3;
     let numStr = id.toString();
     let zerosToAdd = widthId - numStr.length;
     for (let i = 0; i < zerosToAdd; i++) {
         numStr = '0' + numStr;;
     }
-    return numStr; 
+    return numStr;
 }
 
 function loadBaseStats(i) {
     setMenuActiv('menuBaseStats');
     setMenuInactiv('menuAbout')
     let aboutContainer = document.getElementById('aboutSection');
-    aboutContainer.innerHTML ='';
+    aboutContainer.innerHTML = '';
     aboutContainer.innerHTML = renderBaseStatsSectionHtml(i);
     renderChart(i);
 
@@ -174,7 +174,7 @@ function loadAbout(i) {
     setMenuActiv('menuAbout');
     setMenuInactiv('menuBaseStats');
     let aboutContainer = document.getElementById('aboutSection');
-    aboutContainer.innerHTML ='';
+    aboutContainer.innerHTML = '';
     aboutContainer.innerHTML = renderAboutSectionHtml(i);
 
 }
@@ -193,13 +193,12 @@ function renderAboutSectionHtml(i) {
         <table>
             <tr>
                 <td class="descriptionText">Grösse</td>
-                <td>${pokemon[i]['height']/10} m</td>
+                <td>${pokemon[i]['height'] / 10} m</td>
             </tr>
             <tr>
                 <td class="descriptionText">Gewicht</td>
-                <td>${pokemon[i]['weight']/10} kg</td>
+                <td>${pokemon[i]['weight'] / 10} kg</td>
             </tr>
-          
         </table>
     </div>
     `;
@@ -211,7 +210,12 @@ function setMenuActiv(menuId) {
     document.getElementById(menuId).classList.add('pokedexMenu-p-activ')
 }
 
-function setMenuInactiv(menuId) {
+// function toggleClassLists(menuId, bool, classList) {
+//     bool ? document.getElementById(menuId).classList.add(classList) : document.getElementById(menuId).classList.remove(classList);
+// }
+
+
+function setMenuInactiv(menuId, bool, classList) {
     document.getElementById(menuId).classList.remove('pokedexMenu-p-activ')
 }
 
@@ -228,33 +232,34 @@ function stopPropagation(event) {
 }
 
 function searchPokemon() {
-  let inputField = document.querySelector("#inputSearch");
-  let container = document.getElementById("previewCard");
+    console.log('pokemonNameSearch :>> ', pokemonName);
+    let inputField = document.querySelector("#inputSearch");
+    let container = document.getElementById("previewCard");
 
-  // let indexPokemon = pokemonName[]
+    // let indexPokemon = pokemonName[]
 
-  inputField.addEventListener("input", function () {
-    let search = inputField.value.toLowerCase();
+    inputField.addEventListener("input", function () {
+        let search = inputField.value.toLowerCase();
 
 
-    let assignedIndices = pokemonName.reduce((indices, poke, index) => {
-      if (poke.toLowerCase().includes(search)) {
-        indices.push(index);
-      }
-      return indices;
-    }, []);
-    container.innerHTML='';
-    assignedIndices.forEach(index => {
-        console.log('index :>> ', index);
-        let name = pokemon[index]['name'];
-        let nameToUpperCase = setFirstLetterUppercase(name);
-        let image = pokemon[index]['sprites']['other']['official-artwork']['front_shiny'];
-        let pokemonId = pokemon[index]['id'];
-        let pokemonIdZeros = addZerosOnId(pokemonId);
-        let { typeColorBgLeft, typeColorBgRight } = getBgColor(index);
-        container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, index, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
-        renderTypeContainer(index);
-
+        let assignedIndices = pokemonName.reduce((indices, poke, index) => {
+            if (poke.toLowerCase().includes(search)) {
+                indices.push(index);
+            }
+            return indices;
+        }, []);
+        container.innerHTML = '';
+            assignedIndices.forEach(index => {
+                console.log('index :>> ', index);
+                console.log('pokemon :>> ', pokemon);
+                let name = pokemon[index]['name'];
+                let nameToUpperCase = setFirstLetterUppercase(name);
+                let image = pokemon[index]['sprites']['other']['official-artwork']['front_shiny'];
+                let pokemonId = pokemon[index]['id'];
+                let pokemonIdZeros = addZerosOnId(pokemonId);
+                let { typeColorBgLeft, typeColorBgRight } = getBgColor(index);
+                container.innerHTML += renderPokemonCardSmalHtml(nameToUpperCase, image, index, pokemonIdZeros, typeColorBgLeft, typeColorBgRight);
+                renderTypeContainer(index); 
+             }); 
     });
-  });
 }
