@@ -91,15 +91,17 @@ async function loadNextPokemon() {
     for (let a = currentCount; a < endcount; a++) {
         let url = `https://pokeapi.co/api/v2/pokemon/${a}`;
         let response = await fetch(url);
-        nextPokemon = await response.json();
-        pokemon.push(nextPokemon);
+        let nextPokemonArray = await response.json();
+        pokemon.push(nextPokemonArray);
     }
     renderPokemonCard();
+    console.log('pokemonloadMore :>> ', pokemon);
 }
 
 // Pokedex-Card
 
 function renderPokedexCard(i) {
+    console.log('i-init :>> ', i);
     loadPokedexCard();
     getData(i);
     loadAbout(i);
@@ -108,7 +110,8 @@ function renderPokedexCard(i) {
 }
 
 async function getData(i) {
-
+    console.log('pokemon :>> ', pokemon);
+    console.log('i :>> ', i);
     let pokedexContainer = document.getElementById('pokedex-bg');
     let name = pokemon[i]['name'];
     let nameToUpperCase = setFirstLetterUppercase(name);
@@ -125,9 +128,12 @@ async function getData(i) {
 function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRight, i) {
     return /*html*/`
     
-    <div class="pokedex-form-bg"  onclick="stopPropagation(event)">
-        <img class="arrow" src="./img/linker-pfeil.png" alt="" onclick="previewPokemon(${i-1})">
-        <div class="pokedex-form">
+    <div class="pokedex-form-bg">
+        <div onclick="stopPropagation(event)">
+            <img class="arrow" src="./img/linker-pfeil.png" alt="" onclick="previewPokemon(${i})">    
+        </div>
+        
+        <div class="pokedex-form" onclick="stopPropagation(event)">
             <div class="bg-pokedex-upper-image">
                 <div id="pokedex" style="background: linear-gradient(to right, ${typeColorBgLeft} 35%, ${typeColorBgRight} 65%)">
                     <h2 id="pokemonName">${name}</h2>
@@ -146,7 +152,10 @@ function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRigh
                 <div class="infoSection" id="baseStatsSection"></div>
             </div>
         </div>
-        <img class="arrow" src="./img/rechter-pfeil.png" alt="" onclick="nextPokemon(${i+1})">
+        <div onclick="stopPropagation(event)">
+            <img class="arrow" src="./img/rechter-pfeil.png" alt="" onclick="nextPokemon(${i})">    
+        </div>
+        
     </div>        
     `;
 }
@@ -234,7 +243,7 @@ function stopPropagation(event) {
 }
 
 function searchPokemon() {
-    console.log('pokemonNameSearch :>> ', pokemonName);
+
     let inputField = document.querySelector("#inputSearch");
     let container = document.getElementById("previewCard");
     inputField.addEventListener("input", function () {
@@ -264,11 +273,28 @@ function renderSearchPokemon(assignedIndices, container) {
 }
 
 function previewPokemon(i){
-    getData(i);
-    loadAbout(i);
+    if (i === 0) {
+        renderPokedexCard(i);   
+        console.log('test :>> ', i);
+    } else{
+        i--;
+        renderPokedexCard(i); 
+        console.log('i-preview :>> ', i);    
+    }
+
 }
 
 function nextPokemon(i){
-    getData(i);
-    loadAbout(i);
+   console.log('pokemon :>> ', pokemon.length);
+    if (i === pokemon.length-1) {
+        renderPokedexCard(i);   
+        console.log('test2 :>> ', i);
+        console.log('pokemon :>> ', pokemon); 
+    } else {
+        i++;
+        renderPokedexCard(i);        
+        console.log('i-next :>> ', i);  
+        console.log('pokemon.length :>> ', pokemon.length);
+    }
+
 }

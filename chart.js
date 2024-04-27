@@ -21,7 +21,6 @@ new Chart(ctx, {
     data: {
         labels: labels,
         datasets: [{
-            label: 'Fähigkeiten',
             data: datas,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
