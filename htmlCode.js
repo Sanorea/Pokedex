@@ -56,7 +56,7 @@ function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRigh
     return /*html*/` 
     <div class="pokedex-form-bg">
         <div onclick="stopPropagation(event)">
-            <img class="arrow" src="./img/linker-pfeil.png" alt="" onclick="previewPokemon(${i})">    
+            <img class="arrow arrow-left" src="./img/linker-pfeil.png" alt="" onclick="previewPokemon(${i})">    
         </div>
         <div class="pokedex-form" onclick="stopPropagation(event)">
             <div class="bg-pokedex-upper-image">
@@ -78,7 +78,7 @@ function renderPokedexCardHtml(name, image, id, typeColorBgLeft, typeColorBgRigh
             </div>
         </div>
         <div onclick="stopPropagation(event)">
-            <img class="arrow" src="./img/rechter-pfeil.png" alt="" onclick="nextPokemon(${i})">    
+            <img class="arrow arrow-right" src="./img/rechter-pfeil.png" alt="" onclick="nextPokemon(${i})">    
         </div>
     </div>        
     `;
